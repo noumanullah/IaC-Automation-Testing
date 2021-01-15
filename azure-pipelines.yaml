@@ -1,7 +1,65 @@
 name: Azure Pipelines
 variables:
   python.version: '3.7.6'
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    exclude:
+    - README.md
+    - .gitignore
+
 stages:
+- stage: Provision
+  jobs:
+  - job: provision_azure_infrastructure
+    displayName: Provision Azure Infrastructure
+    pool:
+      vmImage: 'ubuntu-18.04'
+    steps:
+    - task: DownloadSecureFile@1
+      name: tfvardef
+      displayName: Download terraform.tfvars
+      inputs:
+        secureFile: 'terraform.tfvars' 
+    
+     # Needed for Terraform VM deployment
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: 'known_hosts'
+        sshPublicKey: $(PUBLIC_KEY)
+        sshKeySecureFile: 'udacity_azure'
+
+    - bash: |
+        cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/environments/test
+      displayName: Copy terraform.tfvars
+
+    - bash: |
+        echo Pipeline workspace dir is $(Pipeline.Workspace)
+        echo Terraform variable definition file is $(tfvardef.secureFilePath)
+        cd $(Agent.TempDirectory)
+        pwd
+        ls -la
+        cat udacity_azure.pub
+        cd ~/.ssh/
+        pwd
+        ls -la
+        cat known_hosts
+        # $(System.DefaultWorkingDirectory) is equivalent to $(Build.SourcesDirectory)
+        cd $(System.DefaultWorkingDirectory)  
+        pwd
+        ls -la
+      displayName: Verify build environment (pre)
+
+    # install Terraform Azure Pipelines Extension by Microsoft DevLabs
+    # https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: '0.13.5'
+
 - stage: Build
   jobs:
   - job: Build
