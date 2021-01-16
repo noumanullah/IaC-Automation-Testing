@@ -79,15 +79,6 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceNameAzureRM: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
 
-    - task: TerraformTaskV1@0
-      displayName: Terraform Apply
-      inputs:
-        provider: 'azurerm'
-        command: 'apply'
-        commandOptions: |
-          -auto-approve 
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        environmentServiceNameAzureRM: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
 
 - stage: Build
   jobs:
