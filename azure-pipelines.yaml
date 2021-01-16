@@ -34,7 +34,7 @@ stages:
 
     - bash: |
         cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform
-      displayName: Copy terraform.tfvars
+      displayName: Copy file terraform.tfvars
 
     - bash: |
         echo Pipeline workspace dir is $(Pipeline.Workspace)
@@ -57,7 +57,7 @@ stages:
     # https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks
     - task: TerraformInstaller@0
       inputs:
-        terraformVersion: '0.12.3'
+        terraformVersion: '0.13.4'
 
     - task: TerraformTaskV1@0
       inputs:
@@ -345,7 +345,7 @@ stages:
     # https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks
     - task: TerraformInstaller@0
       inputs:
-        terraformVersion: '0.12.3'
+        terraformVersion: '0.13.4'
 
     - task: TerraformTaskV1@0
       inputs:
