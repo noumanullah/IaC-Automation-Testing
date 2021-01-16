@@ -42,7 +42,7 @@ stages:
         cd $(Agent.TempDirectory)
         pwd
         ls -la
-        cat udacity_azure.pub
+        cat id_rsa.pub
         cd ~/.ssh/
         pwd
         ls -la
@@ -78,67 +78,68 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceNameAzureRM: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
 
+    - task: TerraformTaskV1@0
+      displayName: Terraform Apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        commandOptions: |
+          -auto-approve 
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        environmentServiceNameAzureRM: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
 
 - stage: Build
   jobs:
-  - job: Build
+  - job: build_artifacts
+    displayName: Build Artifacts
     pool:
-      name: Hosted Ubuntu 1604
+      vmImage: 'ubuntu-18.04'
     steps:
-    # Needed for Terraform VM deployment
-    # - task: InstallSSHKey@0
-    #   inputs:
-    #     knownHostsEntry: 'KNOWN_HOSTS_STRING'
-    #     sshPublicKey: 'PUBLIC_KEY'
-    #     sshKeySecureFile: 'id_rsa'
     - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
+      displayName: Archive FakeRestAPI
       inputs:
-        rootFolderOrFile: 'fakerestapi'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
         includeRootFolder: false
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
-- stage:
+        archiveFile: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+        verbose: true
+    - task: PublishPipelineArtifact@1
+      displayName: Publish FakeRestAPI artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+        artifactName: 'drop-fakerestapi'
+
+    - task: ArchiveFiles@2
+      displayName: Archive Selenium
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+        verbose: true
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Selenium artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+        artifactName: 'drop-selenium'
+
+- stage: Deployment
   jobs:
-  - deployment: FakeRestAPI
+  - deployment: deployment_fakerestapi
+    displayName: Deploy FakeRestAPI
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: 'ubuntu-18.04'
     environment: 'TEST'
     strategy:
       runOnce:
         deploy:
           steps:
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App'
+            displayName: Deploy Azure WebApp
             inputs:
-              azureSubscription: ''
-              appName: ''
+              azureSubscription: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
+              appName: 'nqualityapp-AppService'
               appType: webApp
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
-  # - deployment: VMDeploy
-  #   displayName: NAME
-  #   environment:
-  #     name:  ENVIRONMENT NAME
-  #     resourceType: VirtualMachine
-  #     tags: TAG NAME
-  #   strategy:
-  #     runOnce:
-  #       deploy:
-  #         steps:
-  #         - task: Bash@3
-  #           inputs:
-  #             targetType: 'inline'
-  #             script: |
-  #               #! /bin/bash
-                
-  #               sudo apt-get upgrade -y
-  #               sudo apt-get install python3-pip -y
-  #               sudo apt-get install unzip -y
-  #               sudo apt-get install -y chromium-browser
-  #               pip3 install selenium
-  #               export PATH=$PATH:some/path
-
+              package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
+              deploymentMethod: zipDeploy
 
