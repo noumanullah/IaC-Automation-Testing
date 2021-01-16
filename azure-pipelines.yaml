@@ -34,7 +34,7 @@ stages:
 
     - bash: |
         cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform
-      displayName: Copy terraform.tfvars
+      displayName: Copy file terraform.tfvars
 
     - bash: |
         echo Pipeline workspace dir is $(Pipeline.Workspace)
