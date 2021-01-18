@@ -51,6 +51,7 @@ stages:
         cd $(System.DefaultWorkingDirectory)  
         pwd
         ls -la
+        sleep 2m
       displayName: Verify build environment (pre)
 
     # install Terraform Azure Pipelines Extension by Microsoft DevLabs
@@ -87,9 +88,6 @@ stages:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-    - task: Delay@1
-      inputs:
-        delayForMinutes: '2'
     - task: ArchiveFiles@2
       displayName: Archive FakeRestAPI
       inputs:
