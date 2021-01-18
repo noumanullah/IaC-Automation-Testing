@@ -87,10 +87,9 @@ stages:
     pool:
       vmImage: 'ubuntu-18.04'
     steps:
-
     - task: Delay@1
       inputs:
-        delayForMinutes: '2' 
+        delayForMinutes: '2'
     - task: ArchiveFiles@2
       displayName: Archive FakeRestAPI
       inputs:
