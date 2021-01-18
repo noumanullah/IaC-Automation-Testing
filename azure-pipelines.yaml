@@ -118,23 +118,23 @@ stages:
 
 - stage: Deployment
   jobs:
-  # - deployment: deployment_fakerestapi
-  #   displayName: Deploy FakeRestAPI
-  #   pool:
-  #     vmImage: 'ubuntu-18.04'
-  #   environment: 'TEST'
-  #   strategy:
-  #     runOnce:
-  #       deploy:
-  #         steps:
-  #         - task: AzureWebApp@1
-  #           displayName: Deploy Azure WebApp
-  #           inputs:
-  #             azureSubscription: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
-  #             appName: 'nqualityapp-AppService'
-  #             appType: webApp
-  #             package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
-  #             deploymentMethod: zipDeploy
+  - deployment: deployment_fakerestapi
+    displayName: Deploy FakeRestAPI
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: 'TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: Deploy Azure WebApp
+            inputs:
+              azureSubscription: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
+              appName: 'nqualityapp-AppService'
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
+              deploymentMethod: zipDeploy
 
   - deployment: deployment_vm
     displayName: Deploy Virtual Machine
@@ -310,51 +310,51 @@ stages:
         testRunTitle: 'Publish Newman test results'
 
 
-- stage: Destroy
-  jobs:
-  - job: destroy_azure_infrastructure
-    displayName: Destroy Azure Infrastructure
-    pool:
-      vmImage: 'ubuntu-18.04'
-    steps:
-    - task: DownloadSecureFile@1
-      name: tfvardef
-      displayName: Download terraform.tfvars
-      inputs:
-        secureFile: 'terraform.tfvars' 
+# - stage: Destroy
+#   jobs:
+#   - job: destroy_azure_infrastructure
+#     displayName: Destroy Azure Infrastructure
+#     pool:
+#       vmImage: 'ubuntu-18.04'
+#     steps:
+#     - task: DownloadSecureFile@1
+#       name: tfvardef
+#       displayName: Download terraform.tfvars
+#       inputs:
+#         secureFile: 'terraform.tfvars' 
 
-    # Needed for Terraform VM deployment
-    - task: InstallSSHKey@0
-      inputs:
-        knownHostsEntry: 'known_hosts'
-        sshPublicKey: $(PUBLIC_KEY)
-        sshKeySecureFile: 'id_rsa'
-    - bash: |
-        cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform
-      displayName: Copy terraform.tfvars
+#     # Needed for Terraform VM deployment
+#     - task: InstallSSHKey@0
+#       inputs:
+#         knownHostsEntry: 'known_hosts'
+#         sshPublicKey: $(PUBLIC_KEY)
+#         sshKeySecureFile: 'id_rsa'
+#     - bash: |
+#         cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform
+#       displayName: Copy terraform.tfvars
 
-    # install Terraform Azure Pipelines Extension by Microsoft DevLabs
-    # https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks
-    - task: TerraformInstaller@0
-      inputs:
-        terraformVersion: '0.13.4'
+#     # install Terraform Azure Pipelines Extension by Microsoft DevLabs
+#     # https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks
+#     - task: TerraformInstaller@0
+#       inputs:
+#         terraformVersion: '0.13.4'
 
-    - task: TerraformTaskV1@0
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        backendServiceArm: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
-        backendAzureRmResourceGroupName: 'terraproj'
-        backendAzureRmStorageAccountName: 'terraproj6610'
-        backendAzureRmContainerName: 'terrastate'
-        backendAzureRmKey: 'terraform.tfstate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    - task: TerraformTaskV1@0
-      displayName: Terraform Destroy
-      inputs:
-        provider: 'azurerm'
-        command: 'destroy'
-        commandOptions: |
-          -auto-approve 
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        environmentServiceNameAzureRM: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
+#     - task: TerraformTaskV1@0
+#       inputs:
+#         provider: 'azurerm'
+#         command: 'init'
+#         backendServiceArm: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
+#         backendAzureRmResourceGroupName: 'terraproj'
+#         backendAzureRmStorageAccountName: 'terraproj6610'
+#         backendAzureRmContainerName: 'terrastate'
+#         backendAzureRmKey: 'terraform.tfstate'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#     - task: TerraformTaskV1@0
+#       displayName: Terraform Destroy
+#       inputs:
+#         provider: 'azurerm'
+#         command: 'destroy'
+#         commandOptions: |
+#           -auto-approve 
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         environmentServiceNameAzureRM: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
