@@ -51,7 +51,7 @@ stages:
         cd $(System.DefaultWorkingDirectory)  
         pwd
         ls -la
-        sleep 2m
+        
       displayName: Verify build environment (pre)
 
     # install Terraform Azure Pipelines Extension by Microsoft DevLabs
