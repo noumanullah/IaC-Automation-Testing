@@ -118,23 +118,23 @@ stages:
 
 - stage: Deployment
   jobs:
-  # - deployment: deployment_fakerestapi
-  #   displayName: Deploy FakeRestAPI
-  #   pool:
-  #     vmImage: 'ubuntu-18.04'
-  #   environment: 'TEST'
-  #   strategy:
-  #     runOnce:
-  #       deploy:
-  #         steps:
-  #         - task: AzureWebApp@1
-  #           displayName: Deploy Azure WebApp
-  #           inputs:
-  #             azureSubscription: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
-  #             appName: 'nqualityapp-AppService'
-  #             appType: webApp
-  #             package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
-  #             deploymentMethod: zipDeploy
+  - deployment: deployment_fakerestapi
+    displayName: Deploy FakeRestAPI
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: 'TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: Deploy Azure WebApp
+            inputs:
+              azureSubscription: 'nouman@aciano.net_VisualStudio_$150(7034c6f8-a777-41a4-b99b-bf1e1a93ff47)'
+              appName: 'nqualityapp-AppService'
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
+              deploymentMethod: zipDeploy
 
   - deployment: deployment_vm
     displayName: Deploy Virtual Machine
