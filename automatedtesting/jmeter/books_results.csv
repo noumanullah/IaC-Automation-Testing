@@ -1,0 +1,7 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1611054917008,1381,Get Books,200,OK,Endurance Test 1-1,text,true,,97539,151,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,935,0,688
+1611054918389,225,Post Books,200,OK,Endurance Test 1-1,text,true,,262,235,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,225,0,0
+1611054918615,235,Get Book,200,OK,Endurance Test 1-1,text,true,,741,157,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books/?id=1,235,0,0
+1611054917507,1349,Get Books,200,OK,Endurance Test 1-2,text,true,,97539,151,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,908,0,667
+1611054918857,222,Post Books,200,OK,Endurance Test 1-2,text,true,,262,235,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,222,0,0
+1611054918851,228,Delete Book,200,OK,Endurance Test 1-1,,true,,211,247,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books/?id=1,228,0,0

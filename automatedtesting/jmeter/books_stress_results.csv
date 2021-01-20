@@ -1,0 +1,8 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1611055312331,1462,Get Books,200,OK,Stress Test 1-1,text,true,,97479,151,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,1009,0,748
+1611055312331,1593,Get Books,200,OK,Stress Test 1-2,text,true,,97539,151,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,1146,0,900
+1611055313793,226,Post Books,200,OK,Stress Test 1-1,text,true,,262,235,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,226,0,0
+1611055313924,228,Post Books,200,OK,Stress Test 1-2,text,true,,262,235,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books,227,0,0
+1611055314019,237,Get Book,200,OK,Stress Test 1-1,text,true,,741,157,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books/?id=1,237,0,0
+1611055314152,233,Get Book,200,OK,Stress Test 1-2,text,true,,741,157,2,2,https://nqualityapp-appservice.azurewebsites.net/api/Books/?id=2,233,0,0
+1611055314257,231,Delete Book,200,OK,Stress Test 1-1,,true,,211,247,1,1,https://nqualityapp-appservice.azurewebsites.net/api/Books/?id=1,231,0,0
